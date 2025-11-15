@@ -10,8 +10,11 @@ export interface Product {
 export interface ProductListResponse {
   products: Product[];
   total: number;
+  skip: number;
 }
 
-export const fetchProductsList = () => {
-  return getRequest<ProductListResponse>('/products');
+export const PRODUCTS_LIMIT = 30;
+
+export const fetchProductsList = async (skip: number) => {
+  return getRequest<ProductListResponse>(`/products?limit=${PRODUCTS_LIMIT}&skip=${skip}`);
 };
