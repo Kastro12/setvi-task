@@ -1,5 +1,5 @@
-import { useInfiniteQuery } from '@tanstack/react-query';
-import { fetchProductsList, PRODUCTS_LIMIT } from '../api/productsApi';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { fetchProductsList, PRODUCTS_LIMIT, fetchProduct } from '../api/productsApi';
 
 export const useProductsList = ({ search, category }: { search: string; category: string }) => {
   return useInfiniteQuery({
@@ -15,5 +15,17 @@ export const useProductsList = ({ search, category }: { search: string; category
     },
 
     staleTime: 1000 * 60 * 2,
+  });
+};
+
+export const useProduct = ({ id }: { id: number | undefined }) => {
+  return useQuery({
+    queryKey: ['productItem', id],
+    queryFn: async () => {
+      const res = await fetchProduct(id);
+      return res;
+    },
+    staleTime: 5 * 60 * 1000,
+    enabled: id ? true : false,
   });
 };

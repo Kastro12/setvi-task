@@ -3,8 +3,11 @@ import Table from '../../components/table/Table';
 import type { TableColumn } from '../../components/table/types';
 import { SearchBar } from '../../components/formFields';
 import { useSearchParams } from 'react-router-dom';
-import { Box, Typography, Alert } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import CategoriesField from './components/CategoriesField';
+import { useState } from 'react';
+import ProductDrawer from './components/ProductDrawer';
+import ErrorAlert from '../../components/alerts/ErrorAlert';
 
 const columns: TableColumn[] = [
   { key: 'id', fieldType: 'paragraph', label: 'ID', width: '10%' },
@@ -20,22 +23,27 @@ const ProductsListPage = () => {
   const urlSearch = params.get('search') ?? '';
   const urlCategory = params.get('category') ?? '';
 
+  const [selectedProduct, setSelectedProduct] = useState<{ id: number } | null>(null);
+
   const { data, isLoading, error, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useProductsList({ search: urlSearch, category: urlCategory });
 
   const products = data?.pages.flatMap((page) => page.products) ?? [];
 
+  const onRowClick = (row: { id: number }) => {
+    setSelectedProduct(row);
+  };
+
   return (
     <>
       <Typography variant='h1' sx={{ fontSize: '25px', textAlign: 'center', margin: '24px 0' }}>
-        ProductsListPage
+        All products
       </Typography>
 
       {error ? (
-        <Alert severity='error'>{error?.message ?? 'Something went wrong. Try again later.'}</Alert>
+        <ErrorAlert error={error} />
       ) : (
         <>
-          {' '}
           <Box sx={{ marginBottom: '20px' }}>
             <SearchBar
               setParams={setParams}
@@ -51,12 +59,17 @@ const ProductsListPage = () => {
             isFetchingNextPage={isFetchingNextPage}
             hasNextPage={!!hasNextPage}
             onLoadMore={fetchNextPage}
-            rowHeight={50}
-            overscanCount={5}
-            style={{ maxHeight: '500px', width: '100%' }}
+            onRowClick={onRowClick}
           />
         </>
       )}
+
+      <ProductDrawer
+        id={selectedProduct?.id}
+        onClose={() => {
+          setSelectedProduct(null);
+        }}
+      />
     </>
   );
 };

@@ -18,7 +18,8 @@ export interface TableProps<T extends Record<string, any>> {
   isLoading: boolean;
   isFetchingNextPage: boolean;
   onLoadMore: () => void;
-  rowHeight: number;
-  overscanCount: number;
+  rowHeight?: number;
+  overscanCount?: number;
   style?: React.CSSProperties;
+  onRowClick?: (row: T) => void;
 }

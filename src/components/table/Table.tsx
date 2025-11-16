@@ -33,9 +33,10 @@ const Table = <T extends Record<string, any>>({
   isLoading,
   isFetchingNextPage,
   onLoadMore,
-  rowHeight,
-  overscanCount,
-  style,
+  rowHeight = 50,
+  overscanCount = 5,
+  style = { maxHeight: '500px', width: '100%' },
+  onRowClick,
 }: TableProps<T>) => {
   const rowCount = data.length + (hasNextPage ? 1 : 0);
 
@@ -59,12 +60,15 @@ const Table = <T extends Record<string, any>>({
       return (
         <Box
           style={style}
+          onClick={() => onRowClick?.(row)}
           sx={{
+            cursor: onRowClick ? 'pointer' : 'default',
             display: 'flex',
             borderBottom: '1px solid var(--color-white)',
             alignItems: 'center',
             padding: '0 8px',
             boxSizing: 'border-box',
+            '&:hover': onRowClick ? { backgroundColor: 'rgba(255, 255, 255, 0.1)' } : {},
           }}
         >
           {columns.map((col: TableColumn) => (

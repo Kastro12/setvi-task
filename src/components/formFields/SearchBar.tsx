@@ -44,81 +44,80 @@ const SearchBar: React.FC<SearchBarProps> = ({
   };
 
   return (
-    <FormControl
-      sx={{
-        position: 'relative',
-        width: '100%',
-        borderRadius: '4px',
-        label: {
-          lineHeight: '18px',
-          color: 'rgba(255, 255, 255, 0.7)',
-          '&.Mui-focused': {
-            color: 'rgba(255, 255, 255, 0.7)',
-          },
-        },
-      }}
-      variant='outlined'
-    >
+    <FormControl sx={formControlStyle} variant='outlined'>
       <InputLabel htmlFor='search-input'>{placeholder}</InputLabel>
       <OutlinedInput
         id='search-input'
         value={searchTerm}
         onChange={handleSearchChange}
-        label='Search'
+        label={placeholder}
         fullWidth
         endAdornment={
           <InputAdornment position='end'>
             {searchTerm && (
-              <IconButton
-                onClick={handleClear}
-                size='small'
-                sx={{
-                  color: 'var(--color-white)',
-                  marginRight: '4px',
-                  '&:hover': {
-                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                  },
-                  '&:focus': {
-                    outline: 'none',
-                  },
-                }}
-              >
+              <IconButton onClick={handleClear} size='small' sx={clearIconStyle}>
                 <ClearIcon fontSize='small' />
               </IconButton>
             )}
             <SearchIcon sx={{ color: 'rgba(255, 255, 255, 0.7)' }} />
           </InputAdornment>
         }
-        sx={{
-          backgroundColor: 'var(--color-black)',
-          color: 'var(--color-white)',
-          '& .MuiOutlinedInput-notchedOutline': {
-            borderColor: 'var(--color-white)',
-            boxShadow: '0 0 8px rgba(255, 255, 255, 0.3)',
-          },
-          '&:hover .MuiOutlinedInput-notchedOutline': {
-            borderColor: 'var(--color-white)',
-            boxShadow: '0 0 12px rgba(255, 255, 255, 0.5)',
-          },
-          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-            borderColor: 'var(--color-green)',
-            boxShadow: '0 0 12px rgba(0, 255, 0, 0.5)',
-          },
-          '& .MuiInputBase-input': {
-            color: 'var(--color-white)',
-            padding: '12px 14px',
-            '&::placeholder': {
-              color: 'rgba(255, 255, 255, 0.5)',
-              opacity: 1,
-            },
-          },
-          '& .MuiSvgIcon-root': {
-            color: 'var(--color-white)',
-          },
-        }}
+        sx={outlinedInputStyle}
       />
     </FormControl>
   );
 };
 
 export default SearchBar;
+
+const formControlStyle = {
+  position: 'relative',
+  width: '100%',
+  borderRadius: '4px',
+  label: {
+    lineHeight: '18px',
+    color: 'rgba(255, 255, 255, 0.7)',
+    '&.Mui-focused': {
+      color: 'rgba(255, 255, 255, 0.7)',
+    },
+  },
+};
+
+const outlinedInputStyle = {
+  backgroundColor: 'var(--color-black)',
+  color: 'var(--color-white)',
+  '& .MuiOutlinedInput-notchedOutline': {
+    borderColor: 'var(--color-white)',
+    boxShadow: '0 0 8px rgba(255, 255, 255, 0.3)',
+  },
+  '&:hover .MuiOutlinedInput-notchedOutline': {
+    borderColor: 'var(--color-white)',
+    boxShadow: '0 0 12px rgba(255, 255, 255, 0.5)',
+  },
+  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+    borderColor: 'var(--color-green)',
+    boxShadow: '0 0 12px rgba(0, 255, 0, 0.5)',
+  },
+  '& .MuiInputBase-input': {
+    color: 'var(--color-white)',
+    padding: '12px 14px',
+    '&::placeholder': {
+      color: 'rgba(255, 255, 255, 0.5)',
+      opacity: 1,
+    },
+  },
+  '& .MuiSvgIcon-root': {
+    color: 'var(--color-white)',
+  },
+};
+
+const clearIconStyle = {
+  color: 'var(--color-white)',
+  marginRight: '4px',
+  '&:hover': {
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  '&:focus': {
+    outline: 'none',
+  },
+};
