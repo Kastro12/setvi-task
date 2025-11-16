@@ -1,7 +1,10 @@
 import { useProductsList } from '../../hooks/products';
 import Table from '../../components/table/Table';
 import type { TableColumn } from '../../components/table/types';
-import { Box, CircularProgress } from '@mui/material';
+import { SearchBar } from '../../components/formFields';
+import { useSearchParams } from 'react-router-dom';
+import { Box, Typography, Alert } from '@mui/material';
+import CategoriesField from './components/CategoriesField';
 
 const columns: TableColumn[] = [
   { key: 'id', fieldType: 'paragraph', label: 'ID', width: '10%' },
@@ -13,35 +16,47 @@ const columns: TableColumn[] = [
 ];
 
 const ProductsListPage = () => {
+  const [params, setParams] = useSearchParams();
+  const urlSearch = params.get('search') ?? '';
+  const urlCategory = params.get('category') ?? '';
+
   const { data, isLoading, error, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useProductsList();
+    useProductsList({ search: urlSearch, category: urlCategory });
 
   const products = data?.pages.flatMap((page) => page.products) ?? [];
 
-  if (isLoading)
-    return (
-      <Box
-        sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '180px' }}
-      >
-        <CircularProgress size={50} />
-      </Box>
-    );
-  if (error) return <p>Error loading products.</p>;
-
   return (
     <>
-      <h1>ProductsListPage</h1>
+      <Typography variant='h1' sx={{ fontSize: '25px', textAlign: 'center', margin: '24px 0' }}>
+        ProductsListPage
+      </Typography>
 
-      <Table
-        columns={columns}
-        data={products}
-        isLoading={isLoading || isFetchingNextPage}
-        hasNextPage={!!hasNextPage}
-        onLoadMore={fetchNextPage}
-        rowHeight={50}
-        overscanCount={5}
-        style={{ height: '500px', width: '100%' }}
-      />
+      {error ? (
+        <Alert severity='error'>{error?.message ?? 'Something went wrong. Try again later.'}</Alert>
+      ) : (
+        <>
+          {' '}
+          <Box sx={{ marginBottom: '20px' }}>
+            <SearchBar
+              setParams={setParams}
+              placeholder={'Search products ...'}
+              initialValue={urlSearch}
+            />
+          </Box>
+          <CategoriesField />
+          <Table
+            columns={columns}
+            data={products}
+            isLoading={isLoading}
+            isFetchingNextPage={isFetchingNextPage}
+            hasNextPage={!!hasNextPage}
+            onLoadMore={fetchNextPage}
+            rowHeight={50}
+            overscanCount={5}
+            style={{ maxHeight: '500px', width: '100%' }}
+          />
+        </>
+      )}
     </>
   );
 };

@@ -31,6 +31,7 @@ const Table = <T extends Record<string, any>>({
   data,
   hasNextPage,
   isLoading,
+  isFetchingNextPage,
   onLoadMore,
   rowHeight,
   overscanCount,
@@ -93,11 +94,25 @@ const Table = <T extends Record<string, any>>({
         onRowsRendered={({ stopIndex }) => {
           const lastDataRow = data.length;
           const isLoaderVisible = stopIndex >= lastDataRow;
-          if (isLoaderVisible && hasNextPage && !isLoading) {
+          if (isLoaderVisible && hasNextPage && !(isLoading || isFetchingNextPage)) {
             onLoadMore();
           }
         }}
       />
+
+      {isLoading && (
+        <Box
+          style={style}
+          sx={{
+            height: `${rowHeight}px`,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <LoaderRow />
+        </Box>
+      )}
     </Box>
   );
 };

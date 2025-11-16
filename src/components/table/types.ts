@@ -16,6 +16,7 @@ export interface TableProps<T extends Record<string, any>> {
   data: T[];
   hasNextPage: boolean;
   isLoading: boolean;
+  isFetchingNextPage: boolean;
   onLoadMore: () => void;
   rowHeight: number;
   overscanCount: number;

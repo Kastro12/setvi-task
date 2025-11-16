@@ -1,6 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom';
 import App from '../App.tsx';
-import { ProductsListPage, ProductPage } from '../pages/products/index.ts';
+import { ProductsListPage } from '../pages/products/index.ts';
 
 export const router = createBrowserRouter([
   {
@@ -10,10 +10,6 @@ export const router = createBrowserRouter([
       {
         index: true,
         element: <ProductsListPage />,
-      },
-      {
-        path: '/:id',
-        element: <ProductPage />,
       },
     ],
   },

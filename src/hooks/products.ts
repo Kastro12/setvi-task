@@ -1,11 +1,11 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { fetchProductsList, PRODUCTS_LIMIT } from '../api/productsApi';
 
-export const useProductsList = () => {
+export const useProductsList = ({ search, category }: { search: string; category: string }) => {
   return useInfiniteQuery({
-    queryKey: ['productsList'],
+    queryKey: ['productsList', search, category],
     queryFn: async ({ pageParam = 0 }) => {
-      const res = await fetchProductsList(pageParam);
+      const res = await fetchProductsList(pageParam, search, category);
       return res;
     },
     initialPageParam: 0,
