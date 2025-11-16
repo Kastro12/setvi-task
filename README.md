@@ -1,73 +1,168 @@
-# React + TypeScript + Vite
+# SETVI -- Senior React Engineer Task
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is a React 19 + TypeScript application implementing a virtualized,
+infinite-scroll product table with search, category filtering, item detail drawer,
+and an AI-style summary generator rendered with a typewriter effect.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+# Tech Stack
 
-## React Compiler
+- **React 19**
+- **TypeScript**
+- **React Query (TanStack Query)** for async state
+- **React Window** for virtualization
+- **MUI + Emotion** for consistent UI styling
+- **Axios** for API communication\
+- **React Router v7** for routing
+- **Vite** for build & development
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+# Setup & Run Instructions
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 1. Clone the repository
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+git clone https://github.com/Kastro12/setvi-task.git
+cd setvi-task
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 2. Install dependencies
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
 ```
+
+### 3. Start the development server
+
+```bash
+npm run dev
+```
+
+### 4. Create production build
+
+```bash
+npm run build
+```
+
+### 5. Preview production build
+
+```bash
+npm run preview
+```
+
+---
+
+# Project Architecture Overview
+
+The project follows a **feature‑based architecture**, ensuring
+separation of concerns, scalability, and clarity.
+
+    src/
+    │
+    ├─ api/                # API modules (axios wrappers)
+    │   ├─ api.ts
+    │   ├─ productsApi.ts
+    │   ├─ categoriesApi.ts
+    │   └─ quotesApi.ts
+    │
+    ├─ components/         # Reusable UI components
+    │   ├─ alerts/
+    │   │   └─ ErrorAlert.tsx
+    │   ├─ formFields/
+    │   │   ├─ index.ts
+    │   │   ├─ SearchBar.tsx
+    │   │   └─ SelectField.tsx
+    │   ├─ navbar/
+    │   │   └─ Navbar.tsx
+    │   └─ table/
+    │       ├─ LoaderRow.tsx
+    │       ├─ TableHeader.tsx
+    │       ├─ Table.tsx
+    │       └─ types.ts
+    │
+    ├─ hooks/              # Data logic (React Query hooks)
+    │   ├─ products.ts
+    │   ├─ categories.ts
+    │   └─ useTypewriterSummary.ts
+    │
+    ├─ pages/
+    │   └─ products/
+    │       ├─ components/
+    │       │   ├─ CategoriesField.tsx
+    │       │   └─ ProductDrawer.tsx
+    │       ├─ index.ts
+    │       └─ ProductsListPage.tsx
+    │
+    ├─ router/
+    │   └─ index.tsx       # App routes
+    │
+    ├─ styles/
+    │   └─ global.css
+    │
+    ├─ types/              # Global TypeScript models
+    │   ├─ categories.ts
+    │   └─ products.ts
+    │
+    ├─ App.tsx
+    └─ main.tsx
+
+---
+
+# Data Flow Summary
+
+### **Products List Page**
+
+1.  `useProductsList` handles:
+    - pagination using `limit + skip`
+    - infinite scrolling
+    - debounced search
+    - category filtering
+    - URL search params sync
+2.  `Table.tsx` (React Window):
+    - renders virtualized rows
+    - includes loader row at the bottom
+    - triggers `fetchNextPage()` when loader becomes visible
+3.  Clicking a product row ➝ opens **ProductDrawer**
+
+---
+
+### **Product Drawer**
+
+Fetches: - product details (`/products/{id}`) - cached quotes (fetched
+once)
+
+Contains: - product info - tags - AI Summary section
+
+---
+
+### **AI Summary (Typewriter)**
+
+Implemented via:
+
+    useTypewriterSummary.ts
+
+Features: - fetches all quotes once - merges all quotes into large
+text - saves summary in **localStorage per product ID** - includes
+blinking caret + per‑character animation
+
+---
+
+# Trade‑offs & What I Would Do With More Time
+
+### Trade-offs
+
+- Used **React Window** over React Virtualized (lighter, simpler for
+  this use case).
+- Used **MUI** for faster development instead of building custom
+  components.
+- Search & categories share the same infinite query for simplicity.
+
+### With more time, I would:
+
+- Add unit tests (React Testing Library + Vitest).
+- Split some components further for better readability.
+- I would centralize all Material UI styling by moving repeated sx objects into a global theme, defining custom variants and overrides (e.g., for buttons, drawers, tags, and layout boxes) to unify colors, spacing, typography...
+
+---
